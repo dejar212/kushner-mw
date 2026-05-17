@@ -1,0 +1,8 @@
+.DS_Store
+.claude/
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.toc
+__pycache__/

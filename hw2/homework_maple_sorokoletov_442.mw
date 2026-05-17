@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Worksheet namespace="urn:schemas-maplesoft-com:worksheet.8.1">
+  <Styles>
+    <Style name="Maple Input" layout="Normal" prompt="&gt; "/>
+    <Style name="Text" layout="Normal"/>
+  </Styles>
+  
+  <Group>
+    <Input>
+      <Text-field style="Text">Homework 2: Controllability on Sphere S^2</Text-field>
+      <Text-field style="Text">Student: Sorokoletov D.S., 442</Text-field>
+    </Input>
+  </Group>
+
+  <Group>
+    <Input>
+      <Text-field prompt="&gt; " style="Maple Input">restart;</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">with(DifferentialGeometry):</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">with(LinearAlgebra):</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">DGsetup([x, y, z], M);</Text-field>
+    </Input>
+  </Group>
+
+  <Group>
+    <Input>
+      <Text-field style="Text">Control vector fields: X (rotation around x-axis), Y (rotation around y-axis)</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">X := evalDG(-y*D_z + z*D_y);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">Y := evalDG(-x*D_z + z*D_x);</Text-field>
+    </Input>
+  </Group>
+
+  <Group>
+    <Input>
+      <Text-field style="Text">Commutator Z = [X, Y] — rotation around z-axis, new direction from Lie bracket</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">Z := LieBracket(X, Y);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">print("Commutator [X, Y] = Z:", Z);</Text-field>
+    </Input>
+  </Group>
+
+  <Group>
+    <Input>
+      <Text-field style="Text">Check tangency: L_V(x^2+y^2+z^2) = 0 means V is tangent to S^2</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">sphere := x^2 + y^2 + z^2;</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">print("L_X(r^2) =", simplify(LieDerivative(X, sphere)));</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">print("L_Y(r^2) =", simplify(LieDerivative(Y, sphere)));</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">print("L_Z(r^2) =", simplify(LieDerivative(Z, sphere)));</Text-field>
+    </Input>
+  </Group>
+
+  <Group>
+    <Input>
+      <Text-field style="Text">Rank check: det = 0 (3 vectors tangent to 2D surface are linearly dependent in R^3)</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">C_X := Vector([0, z, -y]);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">C_Y := Vector([z, 0, -x]);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">C_Z := Vector([-y, x, 0]);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">Mat := Matrix([[0, z, -y], [z, 0, -x], [-y, x, 0]]);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">Det3 := simplify(Determinant(Mat));</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">print("det(X, Y, Z) =", Det3);</Text-field>
+    </Input>
+  </Group>
+
+  <Group>
+    <Input>
+      <Text-field style="Text">Verify rank = 2 everywhere: sum of |Vi x Vj|^2 = (x^2+y^2+z^2)^2 = 1 on S^2</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">CP_XY := CrossProduct(C_X, C_Y);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">CP_XZ := CrossProduct(C_X, C_Z);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">CP_YZ := CrossProduct(C_Y, C_Z);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">N_XY := simplify(DotProduct(CP_XY, CP_XY));</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">N_XZ := simplify(DotProduct(CP_XZ, CP_XZ));</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">N_YZ := simplify(DotProduct(CP_YZ, CP_YZ));</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">print("|X x Y|^2 =", factor(N_XY));</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">print("|X x Z|^2 =", factor(N_XZ));</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">print("|Y x Z|^2 =", factor(N_YZ));</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">S_total := factor(simplify(N_XY + N_XZ + N_YZ));</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">print("Sum |Vi x Vj|^2 =", S_total);</Text-field>
+    </Input>
+  </Group>
+
+  <Group>
+    <Input>
+      <Text-field style="Text">Construct flows along ALL THREE vector fields: X, Y, and Z = [X,Y]</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">F_X := Flow(X, t_param);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">F_Y := Flow(Y, s_param);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">F_Z := Flow(Z, q_param);</Text-field>
+    </Input>
+  </Group>
+
+  <Group>
+    <Input>
+      <Text-field style="Text">Path from A to B: composition Phi_q^Z o Phi_s^Y o Phi_t^X</Text-field>
+      <Text-field style="Text">Step 1: X-flow (rotation around x) brings y-coordinate to 0</Text-field>
+      <Text-field style="Text">Step 2: Y-flow (rotation around y) adjusts z-coordinate to z1</Text-field>
+      <Text-field style="Text">Step 3: Z=[X,Y]-flow (commutator, rotation around z) rotates in xy-plane to target</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">A := [x0, y0, z0];</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">B := [x1, y1, z1];</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">t1 := arctan(-y0, z0);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">rho1 := sqrt(y0^2 + z0^2);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">rho2 := sqrt(x1^2 + y1^2);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">s1 := arctan(rho2, z1) - arctan(x0, rho1);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">q1 := arctan(y1, x1);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">P1_expr := ApplyTransformation(F_X, A);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">P1 := simplify(eval(P1_expr, t_param = t1)) assuming real;</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">print("P1 (after Phi_t^X):", P1);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">P2_expr := ApplyTransformation(F_Y, P1);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">P2 := simplify(eval(P2_expr, s_param = s1)) assuming real;</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">print("P2 (after Phi_s^Y):", P2);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">FP_expr := ApplyTransformation(F_Z, P2);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">FinalPoint := simplify(eval(FP_expr, q_param = q1)) assuming real;</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">print("Final Point (after Phi_q^Z):", FinalPoint);</Text-field>
+    </Input>
+  </Group>
+
+  <Group>
+    <Input>
+      <Text-field prompt="&gt; " style="Maple Input">print("=== Test 1: [0, 0, 1] -&gt; [1/sqrt(2), 1/sqrt(2), 0] ===");</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">Test_Final := eval(FinalPoint, [x0=0, y0=0, z0=1, x1=1/sqrt(2), y1=1/sqrt(2), z1=0]);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">Test_Final := simplify(Test_Final);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">print("Result (must be [1/sqrt(2), 1/sqrt(2), 0]):", Test_Final);</Text-field>
+    </Input>
+  </Group>
+
+  <Group>
+    <Input>
+      <Text-field prompt="&gt; " style="Maple Input">print("=== Test 2: [0, 0, 1] -&gt; [1, 0, 0] ===");</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">Test_Final2 := eval(FinalPoint, [x0=0, y0=0, z0=1, x1=1, y1=0, z1=0]);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">Test_Final2 := simplify(Test_Final2);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">print("Result (must be [1, 0, 0]):", Test_Final2);</Text-field>
+    </Input>
+  </Group>
+
+  <Group>
+    <Input>
+      <Text-field prompt="&gt; " style="Maple Input">print("=== Test 3: [0, 1, 0] -&gt; [1/sqrt(3), 1/sqrt(3), 1/sqrt(3)] ===");</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">Test_Final3 := eval(FinalPoint, [x0=0, y0=1, z0=0, x1=1/sqrt(3), y1=1/sqrt(3), z1=1/sqrt(3)]);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">Test_Final3 := simplify(Test_Final3);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">print("Result (must be [1/sqrt(3), 1/sqrt(3), 1/sqrt(3)]):", Test_Final3);</Text-field>
+    </Input>
+  </Group>
+
+</Worksheet>

@@ -1,0 +1,79 @@
+restart;
+with(DifferentialGeometry):
+with(LinearAlgebra):
+
+DGsetup([x, y, z], M);
+
+X := evalDG(-y*D_z + z*D_y);
+Y := evalDG(-x*D_z + z*D_x);
+
+Z := LieBracket(X, Y);
+print("Commutator [X, Y] = Z:", Z);
+
+sphere := x^2 + y^2 + z^2;
+print("L_X(r^2) =", simplify(LieDerivative(X, sphere)));
+print("L_Y(r^2) =", simplify(LieDerivative(Y, sphere)));
+print("L_Z(r^2) =", simplify(LieDerivative(Z, sphere)));
+
+C_X := Vector([0, z, -y]);
+C_Y := Vector([z, 0, -x]);
+C_Z := Vector([-y, x, 0]);
+
+Mat := Matrix([[0, z, -y], [z, 0, -x], [-y, x, 0]]);
+Det3 := simplify(Determinant(Mat));
+print("det(X, Y, Z) =", Det3);
+
+CP_XY := CrossProduct(C_X, C_Y);
+CP_XZ := CrossProduct(C_X, C_Z);
+CP_YZ := CrossProduct(C_Y, C_Z);
+
+N_XY := simplify(DotProduct(CP_XY, CP_XY));
+N_XZ := simplify(DotProduct(CP_XZ, CP_XZ));
+N_YZ := simplify(DotProduct(CP_YZ, CP_YZ));
+
+print("|X x Y|^2 =", factor(N_XY));
+print("|X x Z|^2 =", factor(N_XZ));
+print("|Y x Z|^2 =", factor(N_YZ));
+
+S_total := factor(simplify(N_XY + N_XZ + N_YZ));
+print("Sum |Vi x Vj|^2 =", S_total);
+
+F_X := Flow(X, t_param);
+F_Y := Flow(Y, s_param);
+F_Z := Flow(Z, q_param);
+
+A := [x0, y0, z0];
+B := [x1, y1, z1];
+
+t1 := arctan(-y0, z0);
+rho1 := sqrt(y0^2 + z0^2);
+rho2 := sqrt(x1^2 + y1^2);
+s1 := arctan(rho2, z1) - arctan(x0, rho1);
+q1 := arctan(y1, x1);
+
+P1_expr := ApplyTransformation(F_X, A);
+P1 := simplify(eval(P1_expr, t_param = t1)) assuming real;
+print("P1 (after Phi_t^X):", P1);
+
+P2_expr := ApplyTransformation(F_Y, P1);
+P2 := simplify(eval(P2_expr, s_param = s1)) assuming real;
+print("P2 (after Phi_s^Y):", P2);
+
+FP_expr := ApplyTransformation(F_Z, P2);
+FinalPoint := simplify(eval(FP_expr, q_param = q1)) assuming real;
+print("Final Point (after Phi_q^Z):", FinalPoint);
+
+print("=== Test 1: [0, 0, 1] -> [1/sqrt(2), 1/sqrt(2), 0] ===");
+Test_Final := eval(FinalPoint, [x0=0, y0=0, z0=1, x1=1/sqrt(2), y1=1/sqrt(2), z1=0]);
+Test_Final := simplify(Test_Final);
+print("Result (must be [1/sqrt(2), 1/sqrt(2), 0]):", Test_Final);
+
+print("=== Test 2: [0, 0, 1] -> [1, 0, 0] ===");
+Test_Final2 := eval(FinalPoint, [x0=0, y0=0, z0=1, x1=1, y1=0, z1=0]);
+Test_Final2 := simplify(Test_Final2);
+print("Result (must be [1, 0, 0]):", Test_Final2);
+
+print("=== Test 3: [0, 1, 0] -> [1/sqrt(3), 1/sqrt(3), 1/sqrt(3)] ===");
+Test_Final3 := eval(FinalPoint, [x0=0, y0=1, z0=0, x1=1/sqrt(3), y1=1/sqrt(3), z1=1/sqrt(3)]);
+Test_Final3 := simplify(Test_Final3);
+print("Result (must be [1/sqrt(3), 1/sqrt(3), 1/sqrt(3)]):", Test_Final3);

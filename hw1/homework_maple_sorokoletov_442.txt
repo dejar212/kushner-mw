@@ -1,0 +1,56 @@
+restart;
+with(DifferentialGeometry):
+with(LinearAlgebra):
+
+DGsetup([x, y, phi], M);
+
+X := evalDG(cos(phi)*D_x + sin(phi)*D_y);
+Y := evalDG(D_phi);
+
+Z := LieBracket(X, Y);
+print("Commutator [X, Y]:", Z);
+
+C_X := [cos(phi), sin(phi), 0];
+C_Y := [0, 0, 1];
+C_Z := [sin(phi), -cos(phi), 0];
+
+Mat := Matrix([C_X, C_Y, C_Z]);
+Det := simplify(Determinant(Mat));
+print("Matrix Determinant:", Det);
+
+A := [x0, y0, phi0];
+B := [x1, y1, phi1];
+
+# Задаем потоки с абстрактными параметрами (t_param - время поворота, s_param - дистанция)
+F_Y := Flow(Y, t_param);
+F_X := Flow(X, s_param);
+
+theta := arctan(y1 - y0, x1 - x0);
+t1 := theta - phi0;
+s1 := sqrt((x1 - x0)^2 + (y1 - y0)^2);
+t2 := phi1 - theta;
+
+# Этап 1: поворот
+P1_expr := ApplyTransformation(F_Y, A);
+P1 := simplify(eval(P1_expr, t_param = t1)) assuming real;
+
+# Этап 2: движение прямо
+P2_expr := ApplyTransformation(F_X, P1);
+P2 := simplify(eval(P2_expr, s_param = s1)) assuming real;
+
+# Этап 3: финальный поворот
+FinalPoint_expr := ApplyTransformation(F_Y, P2);
+FinalPoint := simplify(eval(FinalPoint_expr, t_param = t2)) assuming real;
+
+print("Final Point:", FinalPoint);
+
+print("----- CHECK 1: Difference -----");
+Difference := simplify([FinalPoint[1] - B[1], FinalPoint[2] - B[2], FinalPoint[3] - B[3]]) assuming real;
+print("Difference (must be [0,0,0]):", Difference);
+
+print("----- CHECK 2: Random Values -----");
+Test_A := [0, 0, 0];
+Test_B := [5, -3, Pi];
+Test_Final := eval(FinalPoint, [x0=Test_A[1], y0=Test_A[2], phi0=Test_A[3], x1=Test_B[1], y1=Test_B[2], phi1=Test_B[3]]);
+Test_Final := simplify(Test_Final);
+print("Test Result (must be [5, -3, Pi]):", Test_Final);
