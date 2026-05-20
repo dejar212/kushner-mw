@@ -1,0 +1,60 @@
+restart;
+with(DifferentialGeometry):with(JetCalculus):with(Tools):with(PDETools):
+
+Preferences("JetNotation", "JetNotation2");
+
+DGsetup([x], [y], M, 1, verbose);
+
+E:=diff(u(t,x),t)+(1+u(t,x))^2*diff(u(t,x),x);
+
+phi:=-(1+y[0])^2*y[1];
+
+ode:=diff(y(x),x)-f(x,y(x));
+
+F:=convert(ode,DGjet);
+
+omega:=evalDG(dy[0]-f(x, y[0])*dx);
+
+S:=evalDG(phi*D_y[0]);
+
+sub_y1:={y[1]=f(x, y[0])};
+
+S1:=eval(S,sub_y1);
+
+evalDG(LieDerivative(S1,omega) &w omega);
+
+G:=-(1+y[0])^2*diff(f(x,y[0]),x)-2*(1+y[0])*f(x,y[0])^2;
+
+pdsolve(G);
+
+sub_f:={f(x, y[0]) = (1+y[0])/(2*x)};
+
+F1:=eval(F,sub_f);
+
+dsolve(convert(F1,DGdiff));
+
+S2:=eval(-S1,sub_f);
+
+Xi:=simplify(Flow(S2,t));
+
+v:=[y[0]-C*sqrt(x)+1];
+
+solve(Pullback(Xi,v),y[0]);
+
+sub_u:={u(t,x)=C*sqrt(x/(1+C^2*t))-1};
+
+simplify(eval(E,sub_u));
+
+plot([seq(eval(C*sqrt(x/(1+C^2*t))-1, [C=1,t=k]), k=0..4)], x=0..5,
+    color=[red, blue, green, orange, purple],
+    thickness=2,
+    legend=["t=0", "t=1", "t=2", "t=3", "t=4"],
+    title="u(t,x), C=1",
+    labels=["x", "u"],
+    axes=boxed);
+
+plot3d(eval(C*sqrt(x/(1+C^2*t))-1, [C=1]), x=0..5, t=0..4,
+    axes=boxed,
+    title="u(t,x), C=1",
+    labels=["x", "t", "u"],
+    style=surfacecontour);

@@ -1,0 +1,32 @@
+restart;
+with(DifferentialGeometry):
+with(LinearAlgebra):
+
+DGsetup([x, y, z], M);
+
+X := evalDG(x*y*D_z);
+Y := evalDG(y*D_y + z*D_x);
+
+Z := LieBracket(X, Y);
+print("[X, Y] =", Z);
+
+C_X := Vector([0, 0, x*y]);
+C_Y := Vector([z, y, 0]);
+C_Z := Vector([x*y, 0, -y*(x+z)]);
+
+Mat := Matrix([[0, 0, x*y], [z, y, 0], [x*y, 0, -y*(x+z)]]);
+Det3 := simplify(Determinant(Mat));
+print("det(X, Y, [X,Y]) =", Det3);
+
+F_X := Flow(X, t_param);
+F_Y := Flow(Y, s_param);
+F_Z := Flow(Z, q_param);
+
+print("Phi_t^X:", F_X);
+print("Phi_s^Y:", F_Y);
+print("Phi_q^Z:", F_Z);
+
+print("Test (1, 1, 0): det =", simplify(eval(Det3, [x=1, y=1, z=0])));
+print("Test (1, 2, 3): det =", simplify(eval(Det3, [x=1, y=2, z=3])));
+print("Test (0, 1, 0): det =", simplify(eval(Det3, [x=0, y=1, z=0])));
+print("Test (1, 0, 5): det =", simplify(eval(Det3, [x=1, y=0, z=5])));
