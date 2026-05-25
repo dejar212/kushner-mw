@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Worksheet namespace="urn:schemas-maplesoft-com:worksheet.8.1">
+  <Styles>
+    <Style name="Maple Input" layout="Normal" prompt="&gt; "/>
+    <Style name="Text" layout="Normal"/>
+  </Styles>
+
+  <Group>
+    <Input>
+      <Text-field style="Text">Final, Task 1.8: Controllability of system X, Y in R^3</Text-field>
+      <Text-field style="Text">Student: Udoratin, group 442</Text-field>
+      <Text-field style="Text">X = x*y*D_z,  Y = y*D_y + z*D_x</Text-field>
+    </Input>
+  </Group>
+
+  <Group>
+    <Input>
+      <Text-field prompt="&gt; " style="Maple Input">restart;</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">with(DifferentialGeometry):</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">with(LinearAlgebra):</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">DGsetup([x, y, z], M);</Text-field>
+    </Input>
+  </Group>
+
+  <Group>
+    <Input>
+      <Text-field style="Text">Control vector fields</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">X := evalDG(x*y*D_z);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">Y := evalDG(y*D_y + z*D_x);</Text-field>
+    </Input>
+  </Group>
+
+  <Group>
+    <Input>
+      <Text-field style="Text">Commutator Z = [X, Y]</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">Z := LieBracket(X, Y);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">print("[X, Y] =", Z);</Text-field>
+    </Input>
+  </Group>
+
+  <Group>
+    <Input>
+      <Text-field style="Text">Components of X, Y, [X,Y] and determinant of their matrix</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">C_X := Vector([0, 0, x*y]);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">C_Y := Vector([z, y, 0]);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">C_Z := Vector([x*y, 0, -y*(x+z)]);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">Mat := Matrix([[0, 0, x*y], [z, y, 0], [x*y, 0, -y*(x+z)]]);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">Det3 := simplify(Determinant(Mat));</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">print("det(X, Y, [X,Y]) =", Det3);</Text-field>
+    </Input>
+  </Group>
+
+  <Group>
+    <Input>
+      <Text-field style="Text">Region of controllability: det != 0 iff x*y != 0</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">print("rank 3 region: x*y &lt;&gt; 0");</Text-field>
+    </Input>
+  </Group>
+
+  <Group>
+    <Input>
+      <Text-field style="Text">Flows of X, Y, Z</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">F_X := Flow(X, t_param);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">F_Y := Flow(Y, s_param);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">F_Z := Flow(Z, q_param);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">print("Phi_t^X:", F_X);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">print("Phi_s^Y:", F_Y);</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">print("Phi_q^Z:", F_Z);</Text-field>
+    </Input>
+  </Group>
+
+  <Group>
+    <Input>
+      <Text-field style="Text">Numerical tests of the determinant at sample points</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">print("Test (1, 1, 0): det =", simplify(eval(Det3, [x=1, y=1, z=0])));</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">print("Test (1, 2, 3): det =", simplify(eval(Det3, [x=1, y=2, z=3])));</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">print("Test (0, 1, 0): det =", simplify(eval(Det3, [x=0, y=1, z=0])));</Text-field>
+      <Text-field prompt="&gt; " style="Maple Input">print("Test (1, 0, 5): det =", simplify(eval(Det3, [x=1, y=0, z=5])));</Text-field>
+    </Input>
+  </Group>
+
+</Worksheet>

@@ -163,20 +163,15 @@ with(DifferentialGeometry):with(JetCalculus):with(Tools):with(PDETools):</Text-f
 </Input>
 </Group>
 <Group view="code" labelreference="L19" drawlabel="true" applyint="true" applyrational="true" applyexponent="false">
-<Input><Text-field prompt="M &gt; " style="Maple Input" layout="Normal">flow_ode := diff(Y(t),t) = (1+Y(t))^3/(2*x);
-flow_sol := dsolve({flow_ode, Y(0)=y[0]}, Y(t));
-Xi := simplify(rhs(flow_sol));
-Xi_explicit := -1 + (1+y[0])*sqrt(x/(x - t*(1+y[0])^2));
-simplify(diff(Xi_explicit,t) - (1+Xi_explicit)^3/(2*x));
-simplify(eval(Xi_explicit, t=0) - y[0]);</Text-field>
+<Input><Text-field prompt="M &gt; " style="Maple Input" layout="Normal">Xi:=simplify(Flow(S2,t));</Text-field>
 </Input>
 </Group>
 <Group view="code" labelreference="L20" drawlabel="true" applyint="true" applyrational="true" applyexponent="false">
-<Input><Text-field prompt="M &gt; " style="Maple Input" layout="Normal">v := Xi_explicit - C*sqrt(x) + 1;</Text-field>
+<Input><Text-field prompt="M &gt; " style="Maple Input" layout="Normal">v:=[y[0]-C*sqrt(x)+1];</Text-field>
 </Input>
 </Group>
 <Group view="code" labelreference="L21" drawlabel="true" applyint="true" applyrational="true" applyexponent="false">
-<Input><Text-field prompt="M &gt; " style="Maple Input" layout="Normal">solve(v=0, y[0]);</Text-field>
+<Input><Text-field prompt="M &gt; " style="Maple Input" layout="Normal">solve(Pullback(Xi,v),y[0]);</Text-field>
 </Input>
 </Group>
 <Group view="code" labelreference="L22" drawlabel="true" applyint="true" applyrational="true" applyexponent="false">
